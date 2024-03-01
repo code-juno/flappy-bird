@@ -102,7 +102,7 @@ const App = () => {
             y={height - BASE_HEIGHT}
             width={width}
             height={BASE_HEIGHT}
-            fit={"cover"}
+            fit={"fill"}
           />
 
           <Group transform={birdRotation} origin={birdOrigin}>
