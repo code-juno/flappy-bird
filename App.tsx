@@ -1,13 +1,15 @@
 import React from "react";
 import Game from "./Game";
 import GameContextProvider from "./context/useGameContext";
+import { FiberProvider } from "its-fine";
 
 const App = () => {
-
   return (
-    <GameContextProvider>
-      <Game />
-    </GameContextProvider>
+    <FiberProvider>
+      <GameContextProvider>
+        <Game />
+      </GameContextProvider>
+    </FiberProvider>
   );
 };
 
