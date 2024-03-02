@@ -16,6 +16,7 @@ type GameContextTypes = {
   score: number;
   setScore: (value: number) => void;
   pipeOffset: number;
+  birdX: number;
 
   pipesX: SharedValue<number>;
   birdY: SharedValue<number>;
@@ -37,11 +38,12 @@ const GameContextProvider = ({ children }) => {
   const [score, setScore] = useState(0);
 
   const pipeOffset = 0;
+  const birdX = width / 4;
   const pipesX = useSharedValue(width);
   const birdY = useSharedValue((height - BIRD_HEIGHT) / 2);
   const birdVelocityY = useSharedValue(0);
   const birdOrigin = useDerivedValue(() => {
-    return { x: width / 4 + BIRD_WIDTH / 2, y: birdY.value + BIRD_HEIGHT / 2 };
+    return { x: birdX + BIRD_WIDTH / 2, y: birdY.value + BIRD_HEIGHT / 2 };
   });
   const birdRotation = useDerivedValue(() => {
     return [
@@ -63,6 +65,7 @@ const GameContextProvider = ({ children }) => {
         setGameOver,
         score,
         setScore,
+        birdX,
         pipeOffset,
         pipesX,
         birdY,

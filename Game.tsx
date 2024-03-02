@@ -1,13 +1,8 @@
-import React, { useEffect } from "react";
-import { Canvas, Group, Image } from "@shopify/react-native-skia";
+import { Canvas } from "@shopify/react-native-skia";
 import { useWindowDimensions, View } from "react-native";
 import {
-  Easing,
   useAnimatedReaction,
   useFrameCallback,
-  withRepeat,
-  withSequence,
-  withTiming,
   runOnJS,
 } from "react-native-reanimated";
 import {
@@ -15,36 +10,31 @@ import {
   Gesture,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
-import useImages from "./hooks/useImages";
 import Score from "./components/score";
 import { useGameContext } from "./context/useGameContext";
 import {
   BASE_HEIGHT,
   BIRD_FLAP_VELOCITY,
   BIRD_HEIGHT,
-  BIRD_WIDTH,
   GRAVITY,
-  PIPE_HEIGHT,
   PIPE_WIDTH,
 } from "./constants/gameConstants";
 import Background from "./components/background";
 import { useContextBridge } from "its-fine";
 import Pipes from "./components/pipes";
+import Bird from "./components/bird";
 
 const Game = () => {
   const { width, height } = useWindowDimensions();
-  const { bird, pipeBottom, pipeTop } = useImages();
   const {
     gameOver,
     setGameOver,
     score,
     setScore,
-    pipeOffset,
     pipesX,
+    birdX,
     birdY,
     birdVelocityY,
-    birdOrigin,
-    birdRotation,
   } = useGameContext();
   const ContextBridge = useContextBridge();
 
@@ -72,8 +62,8 @@ const Game = () => {
     (x, xPrev) => {
       if (
         xPrev &&
-        xPrev > width / 4 - PIPE_WIDTH / 2 &&
-        x <= width / 4 - PIPE_WIDTH / 2
+        xPrev > birdX - PIPE_WIDTH / 2 &&
+        x <= birdX - PIPE_WIDTH / 2
       ) {
         runOnJS(setScore)(score + 1);
       }
@@ -104,15 +94,7 @@ const Game = () => {
                 <Pipes />
               </Background>
 
-              <Group transform={birdRotation} origin={birdOrigin}>
-                <Image
-                  image={bird}
-                  x={width / 4}
-                  y={birdY}
-                  width={BIRD_WIDTH}
-                  height={BIRD_HEIGHT}
-                />
-              </Group>
+              <Bird />
             </ContextBridge>
           </Canvas>
         </View>
