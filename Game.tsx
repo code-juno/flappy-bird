@@ -9,6 +9,8 @@ import {
   withSequence,
   withTiming,
   runOnJS,
+  useDerivedValue,
+  useSharedValue,
 } from "react-native-reanimated";
 import {
   GestureDetector,
@@ -18,7 +20,15 @@ import {
 import useImages from "./hooks/useImages";
 import Score from "./components/score";
 import { useGameContext } from "./context/useGameContext";
-import { BASE_HEIGHT, BIRD_FLAP_VELOCITY, BIRD_HEIGHT, BIRD_WIDTH, GRAVITY, PIPE_HEIGHT, PIPE_WIDTH } from "./constants/gameConstants";
+import {
+  BASE_HEIGHT,
+  BIRD_FLAP_VELOCITY,
+  BIRD_HEIGHT,
+  BIRD_WIDTH,
+  GRAVITY,
+  PIPE_HEIGHT,
+  PIPE_WIDTH,
+} from "./constants/gameConstants";
 
 const Game = () => {
   const { width, height } = useWindowDimensions();
@@ -36,6 +46,9 @@ const Game = () => {
     birdRotation,
   } = useGameContext();
 
+  const bgFirstTileX = useSharedValue(0);
+  const baseFirstTileX = useSharedValue(0);
+
   useFrameCallback(({ timeSincePreviousFrame }) => {
     if (gameOver || !timeSincePreviousFrame) {
       return;
@@ -51,15 +64,48 @@ const Game = () => {
 
   function moveMap() {
     "worklet";
+
+    const pipeDuration = 4000;
+    const baseDuration = (pipeDuration * (width + PIPE_WIDTH)) / width;
+
     pipesX.value = withRepeat(
       withSequence(
-        withTiming(-PIPE_WIDTH, { duration: 4000, easing: Easing.linear }),
-        withTiming(width, { duration: 0 })
+        withTiming(width, { duration: 0 }),
+        withTiming(-PIPE_WIDTH, {
+          duration: pipeDuration,
+          easing: Easing.linear,
+        })
+      ),
+      -1,
+      true
+    );
+
+    baseFirstTileX.value = withRepeat(
+      withSequence(
+        withTiming(width, { duration: 0 }),
+        withTiming(0, { duration: baseDuration, easing: Easing.linear })
+      ),
+      -1,
+      true
+    );
+
+    bgFirstTileX.value = withRepeat(
+      withSequence(
+        withTiming(width, { duration: 0 }),
+        withTiming(0, { duration: 6000, easing: Easing.linear })
       ),
       -1,
       true
     );
   }
+
+  const bgSecondTileX = useDerivedValue(() => {
+    return bgFirstTileX.value - width;
+  });
+
+  const baseSecondTileX = useDerivedValue(() => {
+    return baseFirstTileX.value - width;
+  });
 
   useAnimatedReaction(
     () => birdY.value,
@@ -75,8 +121,8 @@ const Game = () => {
   useAnimatedReaction(
     () => pipesX.value,
     (x, xPrev) => {
-      
-      if (xPrev &&
+      if (
+        xPrev &&
         xPrev > width / 4 - PIPE_WIDTH / 2 &&
         x <= width / 4 - PIPE_WIDTH / 2
       ) {
@@ -97,7 +143,22 @@ const Game = () => {
   const Map = () => {
     return (
       <>
-        <Image image={bg} fit="cover" width={width} height={height} />
+        <Image
+          y={0}
+          x={bgFirstTileX}
+          image={bg}
+          fit="fill"
+          width={width + 2}
+          height={height}
+        />
+        <Image
+          y={0}
+          x={bgSecondTileX}
+          image={bg}
+          fit="fill"
+          width={width + 2}
+          height={height}
+        />
 
         <Image
           image={pipeTop}
@@ -116,7 +177,15 @@ const Game = () => {
 
         <Image
           image={base}
-          x={0}
+          x={baseFirstTileX}
+          y={height - BASE_HEIGHT}
+          width={width}
+          height={BASE_HEIGHT}
+          fit={"fill"}
+        />
+        <Image
+          image={base}
+          x={baseSecondTileX}
           y={height - BASE_HEIGHT}
           width={width}
           height={BASE_HEIGHT}
