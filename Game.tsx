@@ -29,6 +29,7 @@ import {
 } from "./constants/gameConstants";
 import Background from "./components/background";
 import { useContextBridge } from "its-fine";
+import Pipes from "./components/pipes";
 
 const Game = () => {
   const { width, height } = useWindowDimensions();
@@ -56,31 +57,12 @@ const Game = () => {
     birdY.value = birdY.value + birdVelocityY.value * dt;
   });
 
-  useEffect(() => {
-    console.log("gameOver Game", gameOver);
-    if (gameOver) {
-      birdVelocityY.value = 0;
-      pipesX.value = withTiming(pipesX.value, { duration: 0 });
-      return;
-    }
-    pipesX.value = withRepeat(
-      withSequence(
-        withTiming(width, { duration: 0 }),
-        withTiming(-PIPE_WIDTH, {
-          duration: 4000,
-          easing: Easing.linear,
-        })
-      ),
-      -1,
-      true
-    );
-  }, [gameOver]);
-
   useAnimatedReaction(
     () => birdY.value,
     (y) => {
       if (y < 0 || y > height - BASE_HEIGHT - BIRD_HEIGHT) {
         runOnJS(setGameOver)(true);
+        birdVelocityY.value = 0;
       }
     }
   );
@@ -119,20 +101,7 @@ const Game = () => {
           <Canvas style={{ width, height }}>
             <ContextBridge>
               <Background>
-                <Image
-                  image={pipeTop}
-                  x={pipesX}
-                  y={pipeOffset - PIPE_HEIGHT / 2}
-                  width={PIPE_WIDTH}
-                  height={PIPE_HEIGHT}
-                />
-                <Image
-                  image={pipeBottom}
-                  x={pipesX}
-                  y={pipeOffset + height - PIPE_HEIGHT / 2}
-                  width={PIPE_WIDTH}
-                  height={PIPE_HEIGHT}
-                />
+                <Pipes />
               </Background>
 
               <Group transform={birdRotation} origin={birdOrigin}>
