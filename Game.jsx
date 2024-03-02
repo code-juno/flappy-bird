@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Canvas, Group, Image } from "@shopify/react-native-skia";
 import { useWindowDimensions, View } from "react-native";
 import {
   Easing,
-  Extrapolation,
-  interpolate,
   useAnimatedReaction,
-  useDerivedValue,
   useFrameCallback,
-  useSharedValue,
   withRepeat,
   withSequence,
   withTiming,
@@ -21,46 +17,27 @@ import {
 } from "react-native-gesture-handler";
 import useImages from "./hooks/useImages";
 import Score from "./components/score";
+import { useGameContext } from "./context/useGameContext";
+import { BASE_HEIGHT, BIRD_FLAP_VELOCITY, BIRD_HEIGHT, BIRD_WIDTH, GRAVITY, PIPE_HEIGHT, PIPE_WIDTH } from "./constants/gameConstants";
 
-const BIRD_WIDTH = 64;
-const BIRD_HEIGHT = 48;
-const BIRD_FLAP_VELOCITY = -400;
-
-const PIPE_WIDTH = 104;
-const PIPE_HEIGHT = 640;
-
-const BASE_HEIGHT = 100;
-
-const GRAVITY = 500;
-
-const App = () => {
+const Game = () => {
   const { width, height } = useWindowDimensions();
   const { bg, bird, pipeBottom, pipeTop, base } = useImages();
-  const [gameOver, setGameOver] = useState(false);
-  const [score, setScore] = useState(0);
-
-  const pipeOffset = 0;
-  const pipesX = useSharedValue(width);
-  const birdY = useSharedValue((height - BIRD_HEIGHT) / 2);
-  const birdVelocityY = useSharedValue(0);
-  const birdOrigin = useDerivedValue(() => {
-    return { x: width / 4 + BIRD_WIDTH / 2, y: birdY.value + BIRD_HEIGHT / 2 };
-  });
-  const birdRotation = useDerivedValue(() => {
-    return [
-      {
-        rotateZ: interpolate(
-          birdVelocityY.value,
-          [-500, 500],
-          [-Math.PI / 4, Math.PI / 4],
-          Extrapolation.CLAMP
-        ),
-      },
-    ];
-  });
+  const {
+    gameOver,
+    setGameOver,
+    score,
+    setScore,
+    pipeOffset,
+    pipesX,
+    birdY,
+    birdVelocityY,
+    birdOrigin,
+    birdRotation,
+  } = useGameContext();
 
   useFrameCallback(({ timeSincePreviousFrame }) => {
-    if (gameOver) {
+    if (gameOver || !timeSincePreviousFrame) {
       return;
     }
     const dt = timeSincePreviousFrame / 1000;
@@ -98,7 +75,8 @@ const App = () => {
   useAnimatedReaction(
     () => pipesX.value,
     (x, xPrev) => {
-      if (
+      
+      if (xPrev &&
         xPrev > width / 4 - PIPE_WIDTH / 2 &&
         x <= width / 4 - PIPE_WIDTH / 2
       ) {
@@ -116,37 +94,45 @@ const App = () => {
     }
   });
 
+  const Map = () => {
+    return (
+      <>
+        <Image image={bg} fit="cover" width={width} height={height} />
+
+        <Image
+          image={pipeTop}
+          x={pipesX}
+          y={pipeOffset - PIPE_HEIGHT / 2}
+          width={PIPE_WIDTH}
+          height={PIPE_HEIGHT}
+        />
+        <Image
+          image={pipeBottom}
+          x={pipesX}
+          y={pipeOffset + height - PIPE_HEIGHT / 2}
+          width={PIPE_WIDTH}
+          height={PIPE_HEIGHT}
+        />
+
+        <Image
+          image={base}
+          x={0}
+          y={height - BASE_HEIGHT}
+          width={width}
+          height={BASE_HEIGHT}
+          fit={"fill"}
+        />
+      </>
+    );
+  };
+
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={tap}>
         <View>
           <Score score={score} />
           <Canvas style={{ width, height }}>
-            <Image image={bg} fit="cover" width={width} height={height} />
-
-            <Image
-              image={pipeTop}
-              x={pipesX}
-              y={pipeOffset - PIPE_HEIGHT / 2}
-              width={PIPE_WIDTH}
-              height={PIPE_HEIGHT}
-            />
-            <Image
-              image={pipeBottom}
-              x={pipesX}
-              y={pipeOffset + height - PIPE_HEIGHT / 2}
-              width={PIPE_WIDTH}
-              height={PIPE_HEIGHT}
-            />
-
-            <Image
-              image={base}
-              x={0}
-              y={height - BASE_HEIGHT}
-              width={width}
-              height={BASE_HEIGHT}
-              fit={"fill"}
-            />
+            <Map />
 
             <Group transform={birdRotation} origin={birdOrigin}>
               <Image
@@ -164,4 +150,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Game;
