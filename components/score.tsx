@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Image } from "react-native";
 
 const digitImages = [
   require("../assets/sprites/0.png"),
@@ -14,8 +14,11 @@ const digitImages = [
   require("../assets/sprites/9.png"),
 ];
 
-const Score = ({ score }) => {
+type ScoreProps = {
+  score: number;
+};
 
+const Score: React.FC<ScoreProps> = ({ score }) => {
   return (
     <View
       style={{
