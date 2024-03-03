@@ -34,16 +34,6 @@ const Game = () => {
   });
 
   useAnimatedReaction(
-    () => birdY.value,
-    (y) => {
-      if (y < 0 || y > height - BASE_HEIGHT - BIRD_HEIGHT) {
-        runOnJS(setGameOver)(true);
-        birdVelocityY.value = 0;
-      }
-    }
-  );
-
-  useAnimatedReaction(
     () => pipesX.value,
     (x, xPrev) => {
       if (xPrev && xPrev > birdX - PIPE_WIDTH / 2 && x <= birdX - PIPE_WIDTH / 2) {
@@ -71,12 +61,23 @@ const Game = () => {
   useAnimatedReaction(
     () => pipesX.value,
     (pipesX) => {
-      if (birdX + BIRD_WIDTH > pipesX - 5 && birdX < pipesX + PIPE_WIDTH) {
+      if (birdX + BIRD_WIDTH > pipesX && birdX < pipesX + PIPE_WIDTH) {
         const topPipe = topPipeY.value + PIPE_HEIGHT;
         if (birdY.value < topPipe || birdY.value + BIRD_HEIGHT > bottomPipeY.value) {
           birdVelocityY.value = 500;
           runOnJS(setCollision)(true);
         }
+      }
+    }
+  );
+
+  // check if the bird has collided with the ground or ceiling
+  useAnimatedReaction(
+    () => birdY.value,
+    (birdY) => {
+      if (birdY < topPipeY.value || birdY + BIRD_WIDTH-10 > height - BASE_HEIGHT) {
+        runOnJS(setGameOver)(true);
+        birdVelocityY.value = 0;
       }
     }
   );
