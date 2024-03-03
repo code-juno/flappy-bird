@@ -1,33 +1,22 @@
 import React, { createContext, useContext, useState } from "react";
 import { useWindowDimensions } from "react-native";
-import {
-  Extrapolation,
-  SharedValue,
-  interpolate,
-  useDerivedValue,
-  useSharedValue,
-} from "react-native-reanimated";
-import { BIRD_HEIGHT, BIRD_WIDTH } from "../constants/gameConstants";
-import { Transforms2d } from "@shopify/react-native-skia";
+import { SharedValue, useDerivedValue, useSharedValue } from "react-native-reanimated";
+import { BIRD_HEIGHT, PIPE_HEIGHT } from "../constants/gameConstants";
 
 type GameContextTypes = {
   gameOver: boolean;
   setGameOver: (value: boolean) => void;
+  collision: boolean;
+  setCollision: (value: boolean) => void;
   score: number;
   setScore: (value: number) => void;
-  pipeOffset: number;
   birdX: number;
-
+  pipeOffset: SharedValue<number>;
   pipesX: SharedValue<number>;
+  topPipeY: SharedValue<number>;
+  bottomPipeY: SharedValue<number>;
   birdY: SharedValue<number>;
   birdVelocityY: SharedValue<number>;
-  birdOrigin: Readonly<
-    SharedValue<{
-      x: number;
-      y: number;
-    }>
-  >;
-  birdRotation: Readonly<SharedValue<Transforms2d>>;
 };
 
 const GameContext = createContext<GameContextTypes>({} as GameContextTypes);
@@ -36,26 +25,18 @@ const GameContextProvider = ({ children }) => {
   const { width, height } = useWindowDimensions();
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
-
-  const pipeOffset = 0;
+  const [collision, setCollision] = useState(false);
   const birdX = width / 4;
+  const pipeOffset = useSharedValue(0);
   const pipesX = useSharedValue(width);
   const birdY = useSharedValue((height - BIRD_HEIGHT) / 2);
   const birdVelocityY = useSharedValue(0);
-  const birdOrigin = useDerivedValue(() => {
-    return { x: birdX + BIRD_WIDTH / 2, y: birdY.value + BIRD_HEIGHT / 2 };
+
+  const topPipeY = useDerivedValue(() => {
+    return pipeOffset.value - PIPE_HEIGHT / 2;
   });
-  const birdRotation = useDerivedValue(() => {
-    return [
-      {
-        rotate: interpolate(
-          birdVelocityY.value,
-          [-500, 500],
-          [-Math.PI / 4, Math.PI / 4],
-          Extrapolation.CLAMP
-        ),
-      },
-    ];
+  const bottomPipeY = useDerivedValue(() => {
+    return pipeOffset.value + height - PIPE_HEIGHT / 2;
   });
 
   return (
@@ -68,10 +49,12 @@ const GameContextProvider = ({ children }) => {
         birdX,
         pipeOffset,
         pipesX,
+        topPipeY,
+        bottomPipeY,
         birdY,
         birdVelocityY,
-        birdOrigin,
-        birdRotation,
+        collision,
+        setCollision,
       }}
     >
       {children}

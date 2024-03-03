@@ -18,10 +18,10 @@ const Background: React.FC<PropsWithChildren> = ({ children }) => {
   const bgFirstTileX = useSharedValue(0);
   const baseFirstTileX = useSharedValue(0);
   const { bg, base } = useImages();
-  const { gameOver } = useGameContext();
+  const { gameOver, collision } = useGameContext();
 
   useEffect(() => {
-    if (gameOver) {
+    if (gameOver || collision) {
       bgFirstTileX.value = withTiming(bgFirstTileX.value, { duration: 0 });
       baseFirstTileX.value = withTiming(bgFirstTileX.value, { duration: 0 });
       return;
@@ -43,7 +43,7 @@ const Background: React.FC<PropsWithChildren> = ({ children }) => {
       -1,
       true
     );
-  }, [gameOver]);
+  }, [gameOver, collision]);
 
   const bgSecondTileX = useDerivedValue(() => {
     return bgFirstTileX.value - width;
