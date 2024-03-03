@@ -37,10 +37,7 @@ const Score: React.FC<ScoreProps> = ({ score }) => {
           .toString()
           .split("")
           .map((digit, index) => (
-            <Image
-              key={index}
-              source={digitImages[parseInt(digit)]}
-            />
+            <Image key={index} source={digitImages[parseInt(digit)]} />
           ))}
       </View>
     </View>

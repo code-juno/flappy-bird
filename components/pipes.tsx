@@ -27,7 +27,6 @@ const Pipes = () => {
       -1,
       true
     );
-
   }, [gameOver]);
 
   return (

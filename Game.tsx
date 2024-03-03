@@ -1,15 +1,7 @@
 import { Canvas } from "@shopify/react-native-skia";
 import { useWindowDimensions, View } from "react-native";
-import {
-  useAnimatedReaction,
-  useFrameCallback,
-  runOnJS,
-} from "react-native-reanimated";
-import {
-  GestureDetector,
-  Gesture,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
+import { useAnimatedReaction, useFrameCallback, runOnJS } from "react-native-reanimated";
+import { GestureDetector, Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
 import Score from "./components/score";
 import { useGameContext } from "./context/useGameContext";
 import {
@@ -26,16 +18,8 @@ import Bird from "./components/bird";
 
 const Game = () => {
   const { width, height } = useWindowDimensions();
-  const {
-    gameOver,
-    setGameOver,
-    score,
-    setScore,
-    pipesX,
-    birdX,
-    birdY,
-    birdVelocityY,
-  } = useGameContext();
+  const { gameOver, setGameOver, score, setScore, pipesX, birdX, birdY, birdVelocityY } =
+    useGameContext();
   const ContextBridge = useContextBridge();
 
   useFrameCallback(({ timeSincePreviousFrame }) => {
@@ -60,11 +44,7 @@ const Game = () => {
   useAnimatedReaction(
     () => pipesX.value,
     (x, xPrev) => {
-      if (
-        xPrev &&
-        xPrev > birdX - PIPE_WIDTH / 2 &&
-        x <= birdX - PIPE_WIDTH / 2
-      ) {
+      if (xPrev && xPrev > birdX - PIPE_WIDTH / 2 && x <= birdX - PIPE_WIDTH / 2) {
         runOnJS(setScore)(score + 1);
       }
     }
@@ -93,7 +73,6 @@ const Game = () => {
               <Background>
                 <Pipes />
               </Background>
-
               <Bird />
             </ContextBridge>
           </Canvas>

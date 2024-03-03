@@ -1,4 +1,3 @@
-
 export const BIRD_WIDTH = 64;
 export const BIRD_HEIGHT = 48;
 export const BIRD_FLAP_VELOCITY = -400;

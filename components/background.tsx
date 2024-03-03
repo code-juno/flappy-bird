@@ -21,7 +21,7 @@ const Background: React.FC<PropsWithChildren> = ({ children }) => {
   const { gameOver } = useGameContext();
 
   useEffect(() => {
-    if(gameOver) {
+    if (gameOver) {
       bgFirstTileX.value = withTiming(bgFirstTileX.value, { duration: 0 });
       baseFirstTileX.value = withTiming(bgFirstTileX.value, { duration: 0 });
       return;
@@ -34,7 +34,7 @@ const Background: React.FC<PropsWithChildren> = ({ children }) => {
       -1,
       true
     );
-  
+
     bgFirstTileX.value = withRepeat(
       withSequence(
         withTiming(width, { duration: 0 }),
@@ -44,8 +44,6 @@ const Background: React.FC<PropsWithChildren> = ({ children }) => {
       true
     );
   }, [gameOver]);
-
-  
 
   const bgSecondTileX = useDerivedValue(() => {
     return bgFirstTileX.value - width;
@@ -57,22 +55,8 @@ const Background: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <Image
-        y={0}
-        x={bgFirstTileX}
-        image={bg}
-        fit="fill"
-        width={width + 2}
-        height={height}
-      />
-      <Image
-        y={0}
-        x={bgSecondTileX}
-        image={bg}
-        fit="fill"
-        width={width + 2}
-        height={height}
-      />
+      <Image y={0} x={bgFirstTileX} image={bg} fit="fill" width={width + 2} height={height} />
+      <Image y={0} x={bgSecondTileX} image={bg} fit="fill" width={width + 2} height={height} />
 
       {children}
 
