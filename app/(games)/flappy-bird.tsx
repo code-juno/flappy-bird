@@ -1,9 +1,9 @@
 import React from "react";
-import Game from "./game";
-import GameContextProvider from "./context/useGameContext";
+import Game from "../../flappy-bird/game";
+import GameContextProvider from "../../flappy-bird/context/useGameContext";
 import { FiberProvider } from "its-fine";
 
-const App = () => {
+const FlappyBird = () => {
   return (
     <FiberProvider>
       <GameContextProvider>
@@ -13,4 +13,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default FlappyBird;

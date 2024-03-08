@@ -2,7 +2,7 @@ import { Canvas } from "@shopify/react-native-skia";
 import { useWindowDimensions, View } from "react-native";
 import { useAnimatedReaction, useFrameCallback, runOnJS } from "react-native-reanimated";
 import { GestureDetector, Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
-import Score from "./components/flappyBird/score";
+import Score from "./components/score";
 import { useGameContext } from "./context/useGameContext";
 import {
   BASE_HEIGHT,
@@ -13,10 +13,10 @@ import {
   PIPE_HEIGHT,
   PIPE_WIDTH,
 } from "./constants/gameConstants";
-import Background from "./components/flappyBird/background";
+import Background from "./components/background";
 import { useContextBridge } from "its-fine";
-import Pipes from "./components/flappyBird/pipes";
-import Bird from "./components/flappyBird/bird";
+import Pipes from "./components/pipes";
+import Bird from "./components/bird";
 
 const Game = () => {
   const { width, height } = useWindowDimensions();

@@ -2,16 +2,16 @@ import React from "react";
 import { View, Image } from "react-native";
 
 const digitImages = [
-  require("../assets/sprites/0.png"),
-  require("../assets/sprites/1.png"),
-  require("../assets/sprites/2.png"),
-  require("../assets/sprites/3.png"),
-  require("../assets/sprites/4.png"),
-  require("../assets/sprites/5.png"),
-  require("../assets/sprites/6.png"),
-  require("../assets/sprites/7.png"),
-  require("../assets/sprites/8.png"),
-  require("../assets/sprites/9.png"),
+  require("../../assets/sprites/0.png"),
+  require("../../assets/sprites/2.png"),
+  require("../../assets/sprites/3.png"),
+  require("../../assets/sprites/4.png"),
+  require("../../assets/sprites/1.png"),
+  require("../../assets/sprites/5.png"),
+  require("../../assets/sprites/6.png"),
+  require("../../assets/sprites/7.png"),
+  require("../../assets/sprites/8.png"),
+  require("../../assets/sprites/9.png"),
 ];
 
 type ScoreProps = {

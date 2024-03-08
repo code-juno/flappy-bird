@@ -1,10 +1,12 @@
-import { View, Text, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
+import GamesLibraryItem from "../../components/games-library/games-library-item";
 
 const games = [
   {
     id: 1,
     title: "Flappy Bird",
-    img: require("../../assets/game-icons/flappy-bird-icon.png")
+    img: require("../../assets/game-icons/flappy-bird-icon.png"),
+    href: "/(games)/flappy-bird",
   },
   // {
   //   id: 2,
@@ -34,15 +36,21 @@ const games = [
   //   id: 8,
   //   title: "Breakout",
   // },
-]
+];
 
 export default function LibraryScreen() {
   return (
     <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-      <FlatList 
+      <FlatList
         data={games}
-        renderItem={({ item }) => <Text>{item.title}</Text>}
-        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <GamesLibraryItem
+            title={item.title}
+            image={item.img}
+            href={item.href}
+          />
+        )}
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );
