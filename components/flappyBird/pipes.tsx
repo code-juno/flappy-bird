@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Image } from "@shopify/react-native-skia";
-import { PIPE_HEIGHT, PIPE_WIDTH } from "../constants/gameConstants";
+import { PIPE_HEIGHT, PIPE_WIDTH } from "../../constants/gameConstants";
 import { useWindowDimensions } from "react-native";
-import { useGameContext } from "../context/useGameContext";
-import useImages from "../hooks/useImages";
+import { useGameContext } from "../../context/useGameContext";
+import useImages from "../../hooks/useImages";
 import { withRepeat, withSequence, withTiming, Easing } from "react-native-reanimated";
 
 const Pipes = () => {

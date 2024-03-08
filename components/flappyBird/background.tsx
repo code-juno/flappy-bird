@@ -1,8 +1,8 @@
 import React, { PropsWithChildren, useEffect } from "react";
 import { Image } from "@shopify/react-native-skia";
-import useImages from "../hooks/useImages";
+import useImages from "../../hooks/useImages";
 import { useWindowDimensions } from "react-native";
-import { BASE_HEIGHT } from "../constants/gameConstants";
+import { BASE_HEIGHT } from "../../constants/gameConstants";
 import {
   Easing,
   withRepeat,
@@ -11,7 +11,7 @@ import {
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
-import { useGameContext } from "../context/useGameContext";
+import { useGameContext } from "../../context/useGameContext";
 
 const Background: React.FC<PropsWithChildren> = ({ children }) => {
   const { width, height } = useWindowDimensions();

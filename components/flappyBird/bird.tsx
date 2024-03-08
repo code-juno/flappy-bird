@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Group, Image } from "@shopify/react-native-skia";
-import useImages from "../hooks/useImages";
-import { useGameContext } from "../context/useGameContext";
-import { BIRD_HEIGHT, BIRD_WIDTH } from "../constants/gameConstants";
+import useImages from "../../hooks/useImages";
+import { useGameContext } from "../../context/useGameContext";
+import { BIRD_HEIGHT, BIRD_WIDTH } from "../../constants/gameConstants";
 import { Extrapolation, interpolate, runOnJS, useAnimatedReaction, useDerivedValue } from "react-native-reanimated";
 
 const Bird = () => {
